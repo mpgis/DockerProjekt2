@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+
+  nginx:
+    image: nginx
+    ports:
+      - 6666:80
+    volumes:
+      - ./www:/www
+    networks:
+      - frontend
+      - backend
+
+  php:
+    image: php:8-fpm
+    volumes:
+      - ./www:/www
+    networks:
+      - backend
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - ./database:/var/lib/mysql
+    networks:
+      - backend
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - 'mysql:db'
+    ports:
+      - 6001:80
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
